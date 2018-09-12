@@ -137,7 +137,7 @@ handlers.registerPlayer = function (args, context) {
         Keys: ["phone", "phone_verified"]
     });
 
-    log.debug("playerData:", playerData);
+    //log.debug("playerData:", playerData);
 
     var currentPhone = playerData.Data["phone"];
     if(!currentPhone || !currentPhone['Value']){
@@ -153,7 +153,7 @@ handlers.registerPlayer = function (args, context) {
         return { code: 400, text: "Phone not verified"};
     }
 
-    var result = server.AddUsernamePassword({
+    var result = client.AddUsernamePassword({
         Username: args.phone,
         Email: currentPlayerId + '' + 'playfab.com',
         Password: args.password
@@ -161,7 +161,7 @@ handlers.registerPlayer = function (args, context) {
 
     log.debug("result:", result);
 
-    server.UpdateUserTitleDisplayName({
+    client.UpdateUserTitleDisplayName({
         DisplayName: args.displayName
     });
 
