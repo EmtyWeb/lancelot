@@ -137,6 +137,8 @@ handlers.registerPlayer = function (args, context) {
         Keys: ["phone", "phone_verified"]
     });
 
+    log.debug("playerData:", playerData);
+
     var currentPhone = playerData.Data["phone"];
     if(!currentPhone || !currentPhone['phone']){
         return { code: 400, text: "Phone not found"};
