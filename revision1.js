@@ -60,6 +60,33 @@ handlers.checkCode = function (args, context) {
     return { code: 200, phone: phone};
 };
 
+handlers.checkCode = function (args, context) {
+ 
+    var inputValue = null;
+    if (args && args.inputValue)
+        inputValue = args.inputValue;
+   
+    log.debug("checkCode:", { input: inputValue });
+   
+    var phone = 380684141572;
+ 
+    return { code: 200, phone: phone};
+};
+
+handlers.registerPlayer = function (args, context) {
+ 
+    var inputValue = null;
+    if (args && args.inputValue)
+        inputValue = args.inputValue;
+   
+    log.debug("checkCode:", { input: inputValue });
+   
+    var phone = 380684141572;
+ 
+    return { code: 200};
+};
+
+
 
 
 // This is a Cloud Script function. "args" is set to the value of the "FunctionParameter" 
