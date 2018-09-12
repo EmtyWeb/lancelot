@@ -54,7 +54,9 @@ handlers.checkCode = function (args, context) {
         inputValue = args.inputValue;
    
     log.debug("checkCode:", { input: inputValue });
-  
+   
+    var phone = 380684141572;
+ 
     return { code: 200, phone: phone};
 };
 
