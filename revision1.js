@@ -41,16 +41,15 @@ handlers.sendCode = function (args, context) {
        var result = JSON.parse(response);
        if(result.status == "ok"){
         
-            var request = {
+            server.UpdateUserInternalData({
                 PlayFabId: currentPlayerId,
                 Data: {
+                    "phone": phone
                     "code": code
                 }
-            };
-        
-            var playerInternalData = server.UpdateUserInternalData(request);
+            });
        
-            return { code:200, text: "Sms send", profile: context.playerProfile};
+            return { code:200, text: "Sms send", code: code};
        }
     }
    
