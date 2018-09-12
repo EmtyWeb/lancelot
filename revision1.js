@@ -1,7 +1,10 @@
 
 /**
-* Send code to player
-*/
+ * Send code to player
+ * @param args
+ * @param context
+ * @returns {*}
+ */
 handlers.sendCode = function (args, context) {
  
     log.debug("arg:", args);
@@ -44,18 +47,24 @@ handlers.sendCode = function (args, context) {
             server.UpdateUserInternalData({
                 PlayFabId: currentPlayerId,
                 Data: {
-                    "phone": phone
+                    "phone": phone,
                     "code": code
                 }
             });
        
-            return { code:200, text: "Sms send", code: code};
+            return { code:200, text: "Sms send", temp: code};
        }
     }
    
     return { code:400, text: "Not send sms"};
 };
 
+/**
+ * Check code
+ * @param args
+ * @param context
+ * @returns {*}
+ */
 handlers.checkCode = function (args, context) {
  
     log.debug("arg:", args);
