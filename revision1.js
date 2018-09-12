@@ -17,7 +17,7 @@ handlers.sendCode = function (args, context) {
         return { code:400, text: "Not valid params"};
     }
  
-    var code = Math.random(11111, 99999);
+    var code = Math.floor(Math.random() * 90000) + 10000;
  
     var headers = {};
  
