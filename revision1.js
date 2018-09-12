@@ -39,12 +39,12 @@ handlers.sendCode = function (args, context) {
     if (args && args.inputValue)
         inputValue = args.inputValue;
    
-    log.debug("helloWorld:", { input: inputValue });
+    log.debug("sendCode:", { input: inputValue });
    
     var code = 11111;
     var phone = 380684141572;
   
-    return { status:200, code: code, phone: phone};
+    return { code:200, code: code, phone: phone};
 };
 
 handlers.checkCode = function (args, context) {
@@ -53,9 +53,9 @@ handlers.checkCode = function (args, context) {
     if (args && args.inputValue)
         inputValue = args.inputValue;
    
-    log.debug("helloWorld:", { input: inputValue });
+    log.debug("checkCode:", { input: inputValue });
   
-    return { status: 200, phone: phone};
+    return { code: 200, phone: phone};
 };
 
 
