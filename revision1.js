@@ -33,7 +33,7 @@
 /**
 * Send code to player
 */
-handlers.sendSms = function (args, context) {
+handlers.sendCode = function (args, context) {
  
     var inputValue = null;
     if (args && args.inputValue)
@@ -44,7 +44,18 @@ handlers.sendSms = function (args, context) {
     var code = 11111;
     var phone = 380684141572;
   
-    return { code: code, phone: phone};
+    return { status:200, code: code, phone: phone};
+};
+
+handlers.checkCode = function (args, context) {
+ 
+    var inputValue = null;
+    if (args && args.inputValue)
+        inputValue = args.inputValue;
+   
+    log.debug("helloWorld:", { input: inputValue });
+  
+    return { status: 200, phone: phone};
 };
 
 
