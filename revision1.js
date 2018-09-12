@@ -86,7 +86,11 @@ handlers.checkCode = function (args, context) {
 
     log.debug("sendCode:", sendCode);
 
-    if(code != sendCode){
+    if(!sendCode){
+        return { code: 400, text: "Not found validate code"};
+    }
+
+    if(code != sendCode['Value']){
         return { code: 400, text: "Not valid code"};
     }
  
