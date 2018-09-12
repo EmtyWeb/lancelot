@@ -149,7 +149,7 @@ handlers.registerPlayer = function (args, context) {
     }
 
     var phoneVerified = playerData.Data["phone_verified"];
-    if(!phoneVerified || !phoneVerified['phone_verified']){
+    if(!phoneVerified || !phoneVerified['Value']){
         return { code: 400, text: "Phone not verified"};
     }
 
