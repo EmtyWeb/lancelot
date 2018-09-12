@@ -97,7 +97,7 @@ handlers.checkCode = function (args, context) {
     server.UpdateUserInternalData({
         PlayFabId: currentPlayerId,
         Data: {
-            phone_verified_timestamp: new Date(now).toUTCString(),
+            phone_verified_timestamp: new Date().toUTCString(),
             phone_verified: true
         }
     });
