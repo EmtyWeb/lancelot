@@ -6,14 +6,18 @@ handlers.sendCode = function (args, context) {
  
     log.debug("arg:", args);
     log.debug("phone:", args.phone);
+ 
+    var phone = args.phone;
 
     //if (!args || (args && typeof args.phone == "undefined")){
         //turn { code:400, text: "Not valid params"};
     //
  
+    var headers = {};
+ 
     var body = {
       "sn":"330",
-      "msisdn": args.phone,
+      "msisdn": phone,
       "message":"test message",
       "uid":"1234567890"
    };
