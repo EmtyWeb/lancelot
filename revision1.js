@@ -140,7 +140,7 @@ handlers.registerPlayer = function (args, context) {
     log.debug("playerData:", playerData);
 
     var currentPhone = playerData.Data["phone"];
-    if(!currentPhone || !currentPhone['phone']){
+    if(!currentPhone || !currentPhone['Value']){
         return { code: 400, text: "Phone not found"};
     }
 
