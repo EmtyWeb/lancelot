@@ -40,24 +40,13 @@ handlers.sendCode = function (args, context) {
         inputValue = args.inputValue;
    
     log.debug("sendCode:", { input: inputValue });
+ 
+    log.debug("sendCode:", args);
    
     var code = 11111;
     var phone = 380684141572;
   
     return { code:200, code: code, phone: phone};
-};
-
-handlers.checkCode = function (args, context) {
- 
-    var inputValue = null;
-    if (args && args.inputValue)
-        inputValue = args.inputValue;
-   
-    log.debug("checkCode:", { input: inputValue });
-   
-    var phone = 380684141572;
- 
-    return { code: 200, phone: phone};
 };
 
 handlers.checkCode = function (args, context) {
