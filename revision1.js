@@ -84,6 +84,8 @@ handlers.checkCode = function (args, context) {
 
     var sendCode = playerData.Data["code"];
 
+    log.debug("sendCode:", sendCode);
+
     if(code != sendCode){
         return { code: 400, text: "Not valid code"};
     }
