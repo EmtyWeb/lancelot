@@ -14,13 +14,15 @@ handlers.sendCode = function (args, context) {
         return { code:400, text: "Not valid params"};
     }
  
+    var code = Math.random(11111, 99999);
+ 
     var headers = {};
  
     var body = {
       "sn":"330",
       "msisdn": phone,
-      "message":"test message",
-      "uid":"1234567890"
+      "message":"Your activation code: " + code,
+      "uid": code
    };
 
     var url = "http://lancelot.nmi.com.ua:8080/sms/";
@@ -38,7 +40,17 @@ handlers.sendCode = function (args, context) {
     if(response){
        var result = JSON.parse(response);
        if(result.status == "ok"){
-          return { code:200, text: "Sms send"};
+        
+            var request = {
+                PlayFabId: currentPlayerId,
+                Data: {
+                    "code": code
+                }
+            };
+        
+            var playerInternalData = server.UpdateUserInternalData(request);
+       
+            return { code:200, text: "Sms send", profile: context.playerProfile};
        }
     }
    
@@ -47,15 +59,36 @@ handlers.sendCode = function (args, context) {
 
 handlers.checkCode = function (args, context) {
  
-    var inputValue = null;
-    if (args && args.inputValue)
-        inputValue = args.inputValue;
-   
-    log.debug("checkCode:", { input: inputValue });
-   
-    var phone = 380684141572;
+    log.debug("arg:", args);
  
-    return { code: 200, phone: phone};
+    log.debug("type:", typeof(args));
+ 
+    var code = args.code;
+
+    if (!args || (args && typeof args.phone == "undefined")){
+        return { code:400, text: "Not valid params"};
+    }
+ 
+    var playerData = server.GetUserInternalData({
+        PlayFabId: currentPlayerId,
+        Keys: ["code"]
+    });
+
+    var sendCode = playerData.Data["code"];
+
+    if(code != sendCode){
+        return { code: 400, text: "Not valid code"};
+    }
+ 
+    server.UpdateUserInternalData({
+        PlayFabId: currentPlayerId,
+        Data: {
+            phone_verified_timestamp: new Date(now).toUTCString(),
+            phone_verified: true
+        }
+    });
+    
+    return { code: 200};
 };
 
 handlers.registerPlayer = function (args, context) {
