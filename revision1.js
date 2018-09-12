@@ -153,17 +153,17 @@ handlers.registerPlayer = function (args, context) {
         return { code: 400, text: "Phone not verified"};
     }
 
-    var result = client.AddUsernamePassword({
-        Username: args.phone,
-        Email: currentPlayerId + '' + 'playfab.com',
-        Password: args.password
-    });
-
-    log.debug("result:", result);
-
-    client.UpdateUserTitleDisplayName({
-        DisplayName: args.displayName
-    });
+    // var result = client.AddUsernamePassword({
+    //     Username: args.phone,
+    //     Email: currentPlayerId + '' + 'playfab.com',
+    //     Password: args.password
+    // });
+    //
+    // log.debug("result:", result);
+    //
+    // client.UpdateUserTitleDisplayName({
+    //     DisplayName: args.displayName
+    // });
 
     return { code: 200};
 };
