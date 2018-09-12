@@ -4,13 +4,13 @@
 */
 handlers.sendCode = function (args, context) {
  
-    var inputValue = null;
-    if (!args || (args && typeof args.phone == "undefined")){
-        return { code:400, text: "Not valid params"};
-    }
-  
     log.debug("arg:", args);
-    
+    log.debug("phone:", args.phone);
+
+    //if (!args || (args && typeof args.phone == "undefined")){
+        //turn { code:400, text: "Not valid params"};
+    //
+ 
     var body = {
       "sn":"330",
       "msisdn": args.phone,
