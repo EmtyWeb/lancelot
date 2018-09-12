@@ -30,6 +30,19 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+/**
+* Send code to player
+*/
+handlers.sendSms = function (args, context) {
+   
+    var code = 11111;
+    var phone = 380684141572;
+  
+    return { code: code, phone: phone};
+};
+
+
+
 // This is a Cloud Script function. "args" is set to the value of the "FunctionParameter" 
 // parameter of the ExecuteCloudScript API.
 // (https://api.playfab.com/Documentation/Client/method/ExecuteCloudScript)
