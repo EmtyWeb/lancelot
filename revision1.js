@@ -121,6 +121,12 @@ handlers.checkCode = function (args, context) {
     return { code: 200};
 };
 
+/**
+ * Register player
+ * @param args
+ * @param context
+ * @returns {*}
+ */
 handlers.registerPlayer = function (args, context) {
 
     var phone = args.phone;
