@@ -43,7 +43,15 @@ handlers.sendCode = function (args, context) {
     if(response){
        var result = JSON.parse(response);
        if(result.status == "ok"){
-        
+
+           server.UpdatePlayerStatistics({
+               PlayFabId: currentPlayerId,
+               Statistics: [{
+                   StatisticName: "sendCode",
+                   Value: true
+               }]
+           });
+
             server.UpdateUserInternalData({
                 PlayFabId: currentPlayerId,
                 Data: {
@@ -93,7 +101,15 @@ handlers.checkCode = function (args, context) {
     if(code != sendCode['Value']){
         return { code: 400, text: "Not valid code"};
     }
- 
+
+    server.UpdatePlayerStatistics({
+        PlayFabId: currentPlayerId,
+        Statistics: [{
+            StatisticName: "checkCode",
+            Value: true
+        }]
+    });
+
     server.UpdateUserInternalData({
         PlayFabId: currentPlayerId,
         Data: {
@@ -106,15 +122,47 @@ handlers.checkCode = function (args, context) {
 };
 
 handlers.registerPlayer = function (args, context) {
- 
-    var inputValue = null;
-    if (args && args.inputValue)
-        inputValue = args.inputValue;
-   
-    log.debug("checkCode:", { input: inputValue });
-   
-    var phone = 380684141572;
- 
+
+    var phone = args.phone;
+    var password = args.password;
+    var displayName = args.displayName;
+
+    if (!args
+        || (args && (typeof phone == "undefined" || typeof password == "undefined" || typeof displayName == "undefined"))){
+        return { code:400, text: "Not valid params"};
+    }
+
+    var playerData = server.GetUserInternalData({
+        PlayFabId: currentPlayerId,
+        Keys: ["phone", "phone_verified"]
+    });
+
+    var currentPhone = playerData.Data["phone"];
+    if(!currentPhone || !currentPhone['phone']){
+        return { code: 400, text: "Phone not found"};
+    }
+
+    if(phone != currentPhone['Value']){
+        return { code: 400, text: "Phone does not match"};
+    }
+
+    var phoneVerified = playerData.Data["phone_verified"];
+    if(!phoneVerified || !phoneVerified['phone_verified']){
+        return { code: 400, text: "Phone not verified"};
+    }
+
+    var result = server.AddUsernamePassword({
+        Username: args.phone,
+        Email: currentPlayerId + '' + 'playfab.com',
+        Password: args.password
+    });
+
+    log.debug("result:", result);
+
+    server.UpdateUserTitleDisplayName({
+        DisplayName: args.displayName
+    });
+
     return { code: 200};
 };
 
