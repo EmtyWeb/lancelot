@@ -13,7 +13,7 @@ handlers.sendCode = function (args, context) {
  
     var phone = args.phone;
 
-    if (!args || (args && typeof args.phone == "undefined")){
+    if (!args || (args && typeof phone == "undefined")){
         return { code:400, text: "Not valid params"};
     }
  
@@ -73,7 +73,7 @@ handlers.checkCode = function (args, context) {
  
     var code = args.code;
 
-    if (!args || (args && typeof args.phone == "undefined")){
+    if (!args || (args && typeof code == "undefined")){
         return { code:400, text: "Not valid params"};
     }
  
