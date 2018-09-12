@@ -34,6 +34,12 @@
 * Send code to player
 */
 handlers.sendSms = function (args, context) {
+ 
+    var inputValue = null;
+    if (args && args.inputValue)
+        inputValue = args.inputValue;
+   
+    log.debug("helloWorld:", { input: inputValue });
    
     var code = 11111;
     var phone = 380684141572;
