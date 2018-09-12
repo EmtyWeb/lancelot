@@ -6,12 +6,13 @@ handlers.sendCode = function (args, context) {
  
     log.debug("arg:", args);
     log.debug("phone:", args.phone);
+    log.debug("type:", typeof(args));
  
     var phone = args.phone;
 
-    //if (!args || (args && typeof args.phone == "undefined")){
-        //turn { code:400, text: "Not valid params"};
-    //
+    if (!args || (args && typeof args.phone == "undefined")){
+        return { code:400, text: "Not valid params"};
+    }
  
     var headers = {};
  
@@ -31,8 +32,12 @@ handlers.sendCode = function (args, context) {
     var response = http.request(url, httpMethod, content, contentType, headers);
  
     log.debug("response:", response);
-  
-    return { code:200};
+ 
+    if(response && response.status == "ok"){
+        return { code:200, text: "Sms send"};
+    }
+   
+    return { code:400, text: "Not send sms"};
 };
 
 handlers.checkCode = function (args, context) {
