@@ -5,7 +5,7 @@
 handlers.sendCode = function (args, context) {
  
     log.debug("arg:", args);
-    log.debug("phone:", args.phone);
+ 
     log.debug("type:", typeof(args));
  
     var phone = args.phone;
@@ -33,8 +33,13 @@ handlers.sendCode = function (args, context) {
  
     log.debug("response:", response);
  
-    if(response && response.status == "ok"){
-        return { code:200, text: "Sms send"};
+    log.debug("type:", typeof(response));
+
+    if(response){
+       var result = JSON.parse(response);
+       if(result.status == "ok"){
+          return { code:200, text: "Sms send"};
+       }
     }
    
     return { code:400, text: "Not send sms"};
