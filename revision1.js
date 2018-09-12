@@ -44,13 +44,13 @@ handlers.sendCode = function (args, context) {
        var result = JSON.parse(response);
        if(result.status == "ok"){
 
-           server.UpdatePlayerStatistics({
-               PlayFabId: currentPlayerId,
-               Statistics: [{
-                   StatisticName: "sendCode",
-                   Value: true
-               }]
-           });
+           // server.UpdatePlayerStatistics({
+           //     PlayFabId: currentPlayerId,
+           //     Statistics: [{
+           //         StatisticName: "sendCode",
+           //         Value: true
+           //     }]
+           // });
 
             server.UpdateUserInternalData({
                 PlayFabId: currentPlayerId,
@@ -102,13 +102,13 @@ handlers.checkCode = function (args, context) {
         return { code: 400, text: "Not valid code"};
     }
 
-    server.UpdatePlayerStatistics({
-        PlayFabId: currentPlayerId,
-        Statistics: [{
-            StatisticName: "checkCode",
-            Value: true
-        }]
-    });
+    // server.UpdatePlayerStatistics({
+    //     PlayFabId: currentPlayerId,
+    //     Statistics: [{
+    //         StatisticName: "checkCode",
+    //         Value: true
+    //     }]
+    // });
 
     server.UpdateUserInternalData({
         PlayFabId: currentPlayerId,
