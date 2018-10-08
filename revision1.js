@@ -48,6 +48,53 @@ handlers.register = function (args, context) {
 };
 
 /**
+ * Register player
+ * @param args
+ * @param context
+ * @returns {*}
+ */
+handlers.registerPlayer = function (args, context) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    var playerStructure = {
+        data: {
+            phone: null,
+            color: 1,
+            helmet: 1
+        },
+        readOnly: {
+            level: 0,
+            exp: 0
+        },
+        internal: {
+            code: null,
+            phone_verified_timestamp: null,
+            phone_verified: false
+        }
+    };
+
+    server.UpdateUserData({
+        PlayFabId: currentPlayerId,
+        Data: playerStructure.data
+    });
+
+    server.UpdateUserReadOnlyData({
+        PlayFabId: currentPlayerId,
+        Data: playerStructure.readOnly
+    });
+
+    server.UpdateUserInternalData({
+        PlayFabId: currentPlayerId,
+        Data: playerStructure.internal
+    });
+
+    return {code: 200, text: "Register user"};
+};
+
+/**
  * Send code to player
  * @param args
  * @param context
