@@ -29,7 +29,7 @@ handlers.register = function (args, context) {
         }
     };
 
-    server.UpdateData({
+    server.UpdateUserData({
         PlayFabId: currentPlayerId,
         Data: playerStructure.data
     });
