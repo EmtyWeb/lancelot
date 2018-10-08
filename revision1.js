@@ -1,4 +1,52 @@
 
+
+/**
+ * Register player
+ * @param args
+ * @param context
+ * @returns {*}
+ */
+handlers.register = function (args, context) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    var playerStructure = {
+        data: {
+            phone: null,
+            color: 1,
+            helmet: 1
+        },
+        readOnly: {
+            level: 0,
+            exp: 0
+        },
+        internal: {
+            code: null,
+            phone_verified_timestamp: null,
+            phone_verified: false
+        }
+    };
+
+    server.UpdateData({
+        PlayFabId: currentPlayerId,
+        Data: playerStructure.data
+    });
+
+    server.UpdateUserReadOnlyData({
+        PlayFabId: currentPlayerId,
+        Data: playerStructure.readOnly
+    });
+
+    server.UpdateUserInternalData({
+        PlayFabId: currentPlayerId,
+        Data: playerStructure.internal
+    });
+
+    return {code: 200, text: "Register user"};
+};
+
 /**
  * Send code to player
  * @param args
@@ -127,7 +175,7 @@ handlers.checkCode = function (args, context) {
  * @param context
  * @returns {*}
  */
-handlers.registerPlayer = function (args, context) {
+handlers.forMatch = function (args, context) {
 
     var phone = args.phone;
     var password = args.password;
