@@ -262,6 +262,8 @@ handlers.MatchEnd = function (args, context) {
             });
 
             log.debug("status ", status);
+            log.debug("coins ", coins);
+            log.debug("exp ", exp);
 
             server.UpdateUserReadOnlyData({
                 PlayFabId: currentPlayerId,
