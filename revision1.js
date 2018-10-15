@@ -263,7 +263,7 @@ handlers.MatchEnd = function (args, context) {
 
             log.debug("read ", readOnlyData);
 
-            exp = (typeof readOnlyData.Data.exp.Value != "undefined")? readOnlyData.Data.exp.Value + exp: exp;
+            exp = (typeof readOnlyData.Data.exp.Value != "undefined")? parseInt(readOnlyData.Data.exp.Value) + exp: exp;
 
             log.debug("status ", status);
             log.debug("coins ", coins);
