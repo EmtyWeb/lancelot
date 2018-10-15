@@ -265,8 +265,9 @@ handlers.MatchEnd = function (args, context) {
     log.debug("type:", typeof(args));
 
     var status = args.status;
+    var matchId = args.status;
 
-    if (!args || (args && typeof status == "undefined")) {
+    if (!args || (args && (typeof status == "undefined" || typeof matchId == "undefined"))) {
         return {code: 400, text: "Not valid params"};
     }
 
