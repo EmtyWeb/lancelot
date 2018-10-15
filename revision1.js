@@ -81,23 +81,25 @@ handlers.MatchCanFind = function (args, context) {
     
     var bet = JSON.parse(titleData.Data.bet);
 
-    bet.forEach(function(element) {
+    bet.forEach(function(item) {
 
-        log.debug("element:", element);
+        if(item.id == betId){
 
+            var investoryData = server.GetUserInventory({
+                PlayFabId: currentPlayerId
+            });
+
+            var coins = investoryData.VirtualCurrency.CO;
+            
+            if(coins > item.coins){
+                return {code: 200, text: "User can match find"};
+            }
+
+            return {code: 400, text: "Not enough money"};
+        }
     });
-    
-    
 
-    
-    
-    var investoryData = server.GetUserInventory({
-        PlayFabId: currentPlayerId
-    });
-
-    log.debug("investory data:", investoryData.VirtualCurrency.CO);
-
-    return {code: 200, text: "User can match find"};
+    return {code: 400, text: "Not find bet"};
 };
 
 
