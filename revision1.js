@@ -119,9 +119,19 @@ handlers.MatchCreated = function (args, context) {
 
     log.debug("type:", typeof(args));
 
-    log.debug("Match Created - Game: " + args);
+    var betId = args.betId;
+    var matchId = args.matchId;
+    if (!args || (args && (typeof betId == "undefined" || typeof matchId == "undefined"))) {
+        return {code: 400, text: "Not valid params"};
+    }
 
-    return {code: 200, text: "Match start"};
+    server.CreateSharedGroup({
+        SharedGroupId: "Match #" + matchId
+    });
+
+    log.debug("Match Created: " + matchId);
+
+    return {code: 200, text: "Match start " + matchId};
 };
 
 /**
