@@ -67,57 +67,44 @@ handlers.MatchCanFind = function (args, context) {
     log.debug("arg:", args);
 
     log.debug("type:", typeof(args));
-    
+
     var betId = args.betId;
-    if (!args || (args && typeof betId == "undefined")){
-        return { code: 400, text: "Not valid params"};
+    if (!args || (args && typeof betId == "undefined")) {
+        return {code: 400, text: "Not valid params"};
     }
-    
+
     var titleData = server.GetTitleData({
         "Keys": [
             "bet"
         ]
     });
-    
+
     var bet = JSON.parse(titleData.Data.bet);
 
     log.debug("bet", betId);
 
-    var test = bet.some(function(el) {
-        return el.id === betId;
-    });
+    for (var i = 0; i < bet.length; i++) {
 
-    log.debug("test:", test);
-    
+        if (bet[i].id == betId) {
 
+            log.debug("isset ", bet[i].id);
 
-    // bet.forEach(function(item) {
-    //
-    //     log.debug("item ", item.id);
-    //
-    //
-    //     if(item.id == betId){
-    //
-    //         log.debug("isset ", item.id);
-    //
-    //
-    //         var investoryData = server.GetUserInventory({
-    //             PlayFabId: currentPlayerId
-    //         });
-    //
-    //         var coins = investoryData.VirtualCurrency.CO;
-    //
-    //         if(coins > item.coins){
-    //             return {code: 200, text: "User can match find"};
-    //         }
-    //
-    //         return {code: 400, text: "Not enough money"};
-    //     }
-    // });
+            var investoryData = server.GetUserInventory({
+                PlayFabId: currentPlayerId
+            });
+
+            var coins = investoryData.VirtualCurrency.CO;
+
+            if (coins > bet[i].coins) {
+                return {code: 200, text: "User can match find"};
+            }
+
+            return {code: 400, text: "Not enough money"};
+        }
+    }
 
     return {code: 400, text: "Not find bet"};
 };
-
 
 
 /**
@@ -200,16 +187,6 @@ handlers.matchEnd = function (args, context) {
 };
 
 
-
-
-
-
-
-
-
-
-
-
 /**
  * Send code to player
  * @param args
@@ -217,27 +194,27 @@ handlers.matchEnd = function (args, context) {
  * @returns {*}
  */
 handlers.sendCode = function (args, context) {
- 
+
     log.debug("arg:", args);
- 
+
     log.debug("type:", typeof(args));
- 
+
     var phone = args.phone;
 
-    if (!args || (args && typeof phone == "undefined")){
-        return { code:400, text: "Not valid params"};
+    if (!args || (args && typeof phone == "undefined")) {
+        return {code: 400, text: "Not valid params"};
     }
- 
+
     var code = Math.floor(Math.random() * 90000) + 10000;
- 
+
     var headers = {};
- 
+
     var body = {
-      "sn":"330",
-      "msisdn": phone,
-      "message":"Your activation code: " + code,
-      "uid": code
-   };
+        "sn": "330",
+        "msisdn": phone,
+        "message": "Your activation code: " + code,
+        "uid": code
+    };
 
     var url = "http://lancelot.nmi.com.ua:8080/sms/";
     var content = JSON.stringify(body);
@@ -246,22 +223,22 @@ handlers.sendCode = function (args, context) {
 
     // The pre-defined http object makes synchronous HTTP requests
     var response = http.request(url, httpMethod, content, contentType, headers);
- 
+
     log.debug("response:", response);
- 
+
     log.debug("type:", typeof(response));
 
-    if(response){
-       var result = JSON.parse(response);
-       if(result.status == "ok"){
+    if (response) {
+        var result = JSON.parse(response);
+        if (result.status == "ok") {
 
-           // server.UpdatePlayerStatistics({
-           //     PlayFabId: currentPlayerId,
-           //     Statistics: [{
-           //         StatisticName: "sendCode",
-           //         Value: true
-           //     }]
-           // });
+            // server.UpdatePlayerStatistics({
+            //     PlayFabId: currentPlayerId,
+            //     Statistics: [{
+            //         StatisticName: "sendCode",
+            //         Value: true
+            //     }]
+            // });
 
             server.UpdateUserInternalData({
                 PlayFabId: currentPlayerId,
@@ -270,12 +247,12 @@ handlers.sendCode = function (args, context) {
                     "code": code
                 }
             });
-       
-            return { code:200, text: "Sms send", temp: code};
-       }
+
+            return {code: 200, text: "Sms send", temp: code};
+        }
     }
-   
-    return { code:400, text: "Not send sms"};
+
+    return {code: 400, text: "Not send sms"};
 };
 
 /**
@@ -285,17 +262,17 @@ handlers.sendCode = function (args, context) {
  * @returns {*}
  */
 handlers.checkCode = function (args, context) {
- 
+
     log.debug("arg:", args);
- 
+
     log.debug("type:", typeof(args));
- 
+
     var code = args.code;
 
-    if (!args || (args && typeof code == "undefined")){
-        return { code:400, text: "Not valid params"};
+    if (!args || (args && typeof code == "undefined")) {
+        return {code: 400, text: "Not valid params"};
     }
- 
+
     var playerData = server.GetUserInternalData({
         PlayFabId: currentPlayerId,
         Keys: ["code"]
@@ -305,12 +282,12 @@ handlers.checkCode = function (args, context) {
 
     log.debug("sendCode:", sendCode);
 
-    if(!sendCode){
-        return { code: 400, text: "Not found validate code"};
+    if (!sendCode) {
+        return {code: 400, text: "Not found validate code"};
     }
 
-    if(code != sendCode['Value']){
-        return { code: 400, text: "Not valid code"};
+    if (code != sendCode['Value']) {
+        return {code: 400, text: "Not valid code"};
     }
 
     // server.UpdatePlayerStatistics({
@@ -328,8 +305,8 @@ handlers.checkCode = function (args, context) {
             phone_verified: true
         }
     });
-    
-    return { code: 200};
+
+    return {code: 200};
 };
 
 /**
@@ -345,8 +322,8 @@ handlers.forMatch = function (args, context) {
     var displayName = args.displayName;
 
     if (!args
-        || (args && (typeof phone == "undefined" || typeof password == "undefined" || typeof displayName == "undefined"))){
-        return { code:400, text: "Not valid params"};
+        || (args && (typeof phone == "undefined" || typeof password == "undefined" || typeof displayName == "undefined"))) {
+        return {code: 400, text: "Not valid params"};
     }
 
     var playerData = server.GetUserInternalData({
@@ -357,17 +334,17 @@ handlers.forMatch = function (args, context) {
     //log.debug("playerData:", playerData);
 
     var currentPhone = playerData.Data["phone"];
-    if(!currentPhone || !currentPhone['Value']){
-        return { code: 400, text: "Phone not found"};
+    if (!currentPhone || !currentPhone['Value']) {
+        return {code: 400, text: "Phone not found"};
     }
 
-    if(phone != currentPhone['Value']){
-        return { code: 400, text: "Phone does not match"};
+    if (phone != currentPhone['Value']) {
+        return {code: 400, text: "Phone does not match"};
     }
 
     var phoneVerified = playerData.Data["phone_verified"];
-    if(!phoneVerified || !phoneVerified['Value']){
-        return { code: 400, text: "Phone not verified"};
+    if (!phoneVerified || !phoneVerified['Value']) {
+        return {code: 400, text: "Phone not verified"};
     }
 
     // var result = client.AddUsernamePassword({
@@ -382,18 +359,16 @@ handlers.forMatch = function (args, context) {
     //     DisplayName: args.displayName
     // });
 
-    return { code: 200};
+    return {code: 200};
 };
 
 
-
-
-// This is a Cloud Script function. "args" is set to the value of the "FunctionParameter" 
+// This is a Cloud Script function. "args" is set to the value of the "FunctionParameter"
 // parameter of the ExecuteCloudScript API.
 // (https://api.playfab.com/Documentation/Client/method/ExecuteCloudScript)
 // "context" contains additional information when the Cloud Script function is called from a PlayStream action.
 handlers.helloWorld = function (args, context) {
-    
+
     // The pre-defined "currentPlayerId" variable is initialized to the PlayFab ID of the player logged-in on the game client. 
     // Cloud Script handles authenticating the player automatically.
     var message = "Hello " + currentPlayerId + "!";
@@ -407,26 +382,26 @@ handlers.helloWorld = function (args, context) {
         inputValue = args.inputValue;
     //log.debug("helloWorld:", { input: args.inputValue });
 
-    
+
     log.debug('test');
-    
-    
+
+
     // The value you return from a Cloud Script function is passed back 
     // to the game client in the ExecuteCloudScript API response, along with any log statements
     // and additional diagnostic information, such as any errors returned by API calls or external HTTP
     // requests. They are also included in the optional player_executed_cloudscript PlayStream event 
     // generated by the function execution.
     // (https://api.playfab.com/playstream/docs/PlayStreamEventModels/player/player_executed_cloudscript)
-    return { messageValue: 'test' };
+    return {messageValue: 'test'};
 };
 
 // This is a simple example of making a PlayFab server API call
 handlers.makeAPICall = function (args, context) {
     var request = {
         PlayFabId: currentPlayerId, Statistics: [{
-                StatisticName: "Level",
-                Value: 2
-            }]
+            StatisticName: "Level",
+            Value: 2
+        }]
     };
     // The pre-defined "server" object has functions corresponding to each PlayFab server API 
     // (https://api.playfab.com/Documentation/Server). It is automatically 
@@ -440,7 +415,7 @@ handlers.makeHTTPRequest = function (args, context) {
     var headers = {
         "X-MyCustomHeader": "Some Value"
     };
-    
+
     var body = {
         input: args,
         userId: currentPlayerId,
@@ -454,26 +429,26 @@ handlers.makeHTTPRequest = function (args, context) {
 
     // The pre-defined http object makes synchronous HTTP requests
     var response = http.request(url, httpMethod, content, contentType, headers);
-    return { responseContent: response };
+    return {responseContent: response};
 };
 
 // This is a simple example of a function that is called from a
 // PlayStream event action. (https://playfab.com/introducing-playstream/)
 handlers.handlePlayStreamEventAndProfile = function (args, context) {
-    
+
     // The event that triggered the action 
     // (https://api.playfab.com/playstream/docs/PlayStreamEventModels)
     var psEvent = context.playStreamEvent;
-    
+
     // The profile data of the player associated with the event
     // (https://api.playfab.com/playstream/docs/PlayStreamProfileModels)
     var profile = context.playerProfile;
-    
+
     // Post data about the event to an external API
-    var content = JSON.stringify({ user: profile.PlayerId, event: psEvent.EventName });
+    var content = JSON.stringify({user: profile.PlayerId, event: psEvent.EventName});
     var response = http.request('https://httpbin.org/status/200', 'post', content, 'application/json', null);
 
-    return { externalAPIResponse: response };
+    return {externalAPIResponse: response};
 };
 
 
@@ -490,7 +465,7 @@ handlers.handlePlayStreamEventAndProfile = function (args, context) {
 handlers.completedLevel = function (args, context) {
     var level = args.levelName;
     var monstersKilled = args.monstersKilled;
-    
+
     var updateUserDataResult = server.UpdateUserInternalData({
         PlayFabId: currentPlayerId,
         Data: {
@@ -501,9 +476,9 @@ handlers.completedLevel = function (args, context) {
     log.debug("Set lastLevelCompleted for player " + currentPlayerId + " to " + level);
     var request = {
         PlayFabId: currentPlayerId, Statistics: [{
-                StatisticName: "level_monster_kills",
-                Value: monstersKilled
-            }]
+            StatisticName: "level_monster_kills",
+            Value: monstersKilled
+        }]
     };
     server.UpdatePlayerStatistics(request);
     log.debug("Updated level_monster_kills stat for player " + currentPlayerId + " to " + monstersKilled);
@@ -514,7 +489,7 @@ handlers.completedLevel = function (args, context) {
 // This makes it possible to share code between multiple handlers and to improve code organization.
 handlers.updatePlayerMove = function (args) {
     var validMove = processPlayerMove(args);
-    return { validMove: validMove };
+    return {validMove: validMove};
 };
 
 
@@ -563,9 +538,9 @@ function processPlayerMove(playerMove) {
     movesMade += 1;
     var request = {
         PlayFabId: currentPlayerId, Statistics: [{
-                StatisticName: "movesMade",
-                Value: movesMade
-            }]
+            StatisticName: "movesMade",
+            Value: movesMade
+        }]
     };
     server.UpdatePlayerStatistics(request);
     server.UpdateUserInternalData({
@@ -595,7 +570,7 @@ handlers.unlockHighSkillContent = function (args, context) {
     };
     var playerInternalData = server.UpdateUserInternalData(request);
     log.info('Unlocked HighSkillContent for ' + context.playerProfile.DisplayName);
-    return { profile: context.playerProfile };
+    return {profile: context.playerProfile};
 };
 
 // Photon Webhooks Integration
