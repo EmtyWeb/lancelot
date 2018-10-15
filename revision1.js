@@ -156,43 +156,27 @@ handlers.MatchCreated = function (args, context) {
         PlayFabIds: players
     });
 
-    log.debug("Match Created: " + matchId);
+    // var sharedData = server.GetSharedGroupData({
+    //     "SharedGroupId": matchId,
+    //     "Keys": [
+    //         "betId"
+    //     ]
+    // });
+    //
+    // log.debug("data: ", sharedData);
 
-    return {code: 200, text: "Match start " + matchId};
-};
+    // var betId = sharedData.Data.betId.Value;
 
-/**
- *
- * @param args
- * @constructor
- */
-handlers.MatchJoined = function (args) {
-
-    log.debug("Match Joined - Game: " + args);
-
-    var matchId = args.matchId;
-    if (!args || (args && typeof matchId == "undefined")) {
-        return {code: 400, text: "Not valid params"};
-    }
-
-    var sharedData = server.GetSharedGroupData({
-        "SharedGroupId": matchId,
-        "Keys": [
-            "betId"
-        ]
-    });
-
-    log.debug("data: ", sharedData);
+    log.debug("bet", betId);
 
     var titleData = server.GetTitleData({
         "Keys": [
-            "bet"
+            "bet",
+            "levels"
         ]
     });
 
     var bet = JSON.parse(titleData.Data.bet);
-
-    log.debug("bet", betId);
 
     for (var i = 0; i < bet.length; i++) {
 
@@ -200,29 +184,46 @@ handlers.MatchJoined = function (args) {
 
             log.debug("bet find ", bet[i].id);
 
-            var investoryData = server.GetUserInventory({
-                PlayFabId: currentPlayerId
-            });
-
-            var coins = investoryData.VirtualCurrency.CO;
-
-            if (coins > bet[i].coins) {
-
-                server.SubtractUserVirtualCurrency({
-                    PlayFabId: currentPlayerId,
-                    VirtualCurrency: "CO",
-                    Amount: bet[i].coins
-                });
-
-                return {code: 200, text: "User can match find"};
+            if(!withdrawCoins(p1, bet[i].coins)){
+                return {code: 400, text: "Not enough money"};
             }
 
-            return {code: 400, text: "Not enough money"};
+            if(p2 != null){
+                if(!withdrawCoins(p2, bet[i].coins)){
+                    return {code: 400, text: "Not enough money"};
+                }
+            }
         }
     }
 
-    return {code: 400, text: "Not find bet"};
+    log.debug("Match Created: " + matchId);
+
+    return {code: 200, text: "Match start " + matchId};
 };
+
+
+function withdrawCoins(playFabId, amount) {
+
+    var investoryData = server.GetUserInventory({
+        PlayFabId: playFabId
+    });
+
+    var coins = investoryData.VirtualCurrency.CO;
+
+    if (coins > amount) {
+
+        server.SubtractUserVirtualCurrency({
+            PlayFabId: playFabId,
+            VirtualCurrency: "CO",
+            Amount: amount
+        });
+
+        return true;
+    }
+
+    return false;
+}
+
 
 /**
  *
