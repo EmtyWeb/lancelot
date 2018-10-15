@@ -274,13 +274,13 @@ handlers.MatchEnd = function (args, context) {
     var sharedData = server.GetSharedGroupData({
         SharedGroupId: matchId,
         Keys: [
-            betId
+            "betId"
         ]
     });
 
     log.debug("data: ", sharedData);
 
-    var betId = sharedData.Data.betId;
+    var betId = sharedData.Data.betId.Value;
 
     var titleData = server.GetTitleData({
         "Keys": [
