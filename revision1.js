@@ -70,7 +70,7 @@ handlers.MatchCanFind = function (args, context) {
 
     var titleData = server.GetTitleData({
         "Keys": [
-            "bit"
+            "bet"
         ]
     });
 
@@ -80,7 +80,7 @@ handlers.MatchCanFind = function (args, context) {
         PlayFabId: currentPlayerId
     });
 
-    log.debug("investory data:", investoryData);
+    log.debug("investory data:", investoryData.Data.VirtualCurrency.CO);
 
     return {code: 200, text: "User can match find"};
 };
