@@ -214,49 +214,69 @@ handlers.matchStart = function (args, context) {
 };
 
 /**
- * Start match
+ * Match End
  * @param args
  * @param context
  * @returns {*}
  */
-handlers.matchEnd = function (args, context) {
+handlers.MatchEnd = function (args, context) {
 
     log.debug("arg:", args);
 
     log.debug("type:", typeof(args));
 
-    log.debug("Match end - Game: " + args.GameId);
+    var status = args.status;
 
-    return {code: 200, text: "Match end"};
-};
+    if (!args || (args && typeof status == "undefined")) {
+        return {code: 400, text: "Not valid params"};
+    }
 
-/**
- * @param args
- * @param context
- * @returns {*}
- */
-handlers.MatchWin = function (args, context) {
+    var betId = args.betId;
+    if (!args || (args && typeof betId == "undefined")) {
+        return {code: 400, text: "Not valid params"};
+    }
 
-    log.debug("arg:", args);
+    var titleData = server.GetTitleData({
+        "Keys": [
+            "bet"
+        ]
+    });
 
-    log.debug("type:", typeof(args));
+    var bet = JSON.parse(titleData.Data.bet);
 
-    return {code: 200, text: "Match win"};
-};
+    for (var i = 0; i < bet.length; i++) {
 
-/**
- * Match lose
- * @param args
- * @param context
- * @returns {*}
- */
-handlers.MatchLose = function (args, context) {
+        if (bet[i].id == betId) {
 
-    log.debug("arg:", args);
+            log.debug("bet find ", bet[i].id);
 
-    log.debug("type:", typeof(args));
+            var coins = (status == true)? bet[i].win.coins: bet[i].lose.coins;
+            var exp = (status == true)? bet[i].win.exp: bet[i].lose.exp;
 
-    return {code: 200, text: "Match lose"};
+            var readOnlyData = server.GetUserReadOnlyData({
+                PlayFabId: currentPlayerId,
+                "Keys": [
+                    "level",
+                    "exp"
+                ]
+            });
+
+            server.UpdateUserReadOnlyData({
+                PlayFabId: currentPlayerId,
+                Data: {
+                    exp: readOnlyData + exp
+                }
+            });
+
+            server.AddUserVirtualCurrency({
+                PlayFabId: currentPlayerId,
+                VirtualCurrency: "CO",
+                Amount: coins
+            });
+
+            return {code: 200, text: "Ok"};
+        }
+    }
 };
 
 /**
