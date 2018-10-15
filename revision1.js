@@ -268,7 +268,7 @@ handlers.MatchEnd = function (args, context) {
             server.UpdateUserReadOnlyData({
                 PlayFabId: currentPlayerId,
                 Data: {
-                    exp: readOnlyData + exp
+                    exp: parseInt(readOnlyData.exp) + exp
                 }
             });
 
