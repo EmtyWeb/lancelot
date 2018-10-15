@@ -133,17 +133,22 @@ handlers.MatchCreated = function (args, context) {
     }
 
     server.CreateSharedGroup({
-        SharedGroupId: "Match #" + matchId
+        SharedGroupId: matchId
     });
 
     server.UpdateSharedGroupData({
-        SharedGroupId: "Match #" + matchId,
+        SharedGroupId: matchId,
         Data: {
             betId: betId,
             p1: p1,
             p2: p2
         },
         Permission: "Public"
+    });
+
+    server.AddSharedGroupMembers({
+        SharedGroupId: matchId,
+        PlayFabIds: [p1, p2]
     });
 
     log.debug("Match Created: " + matchId);
