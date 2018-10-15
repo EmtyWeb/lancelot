@@ -238,11 +238,13 @@ handlers.MatchEnd = function (args, context) {
 
     var titleData = server.GetTitleData({
         "Keys": [
-            "bet"
+            "bet",
+            "levels"
         ]
     });
 
     var bet = JSON.parse(titleData.Data.bet);
+    var levels = JSON.parse(titleData.Data.levels);
 
     for (var i = 0; i < bet.length; i++) {
 
@@ -261,18 +263,20 @@ handlers.MatchEnd = function (args, context) {
                 ]
             });
 
-            log.debug("read ", readOnlyData);
-
             exp = (typeof readOnlyData.Data.exp.Value != "undefined")? parseInt(readOnlyData.Data.exp.Value) + exp: exp;
 
-            log.debug("status ", status);
-            log.debug("coins ", coins);
-            log.debug("exp ", exp);
+            var level = 0;
+            for (var j = 0; j < levels.length; j++) {
+                if (exp > levels[j].exp) {
+                    level = levels[j].id;
+                }
+            }
 
             server.UpdateUserReadOnlyData({
                 PlayFabId: currentPlayerId,
                 Data: {
-                    exp: exp
+                    exp: exp,
+                    level: level
                 }
             });
 
