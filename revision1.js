@@ -81,16 +81,24 @@ handlers.MatchCanFind = function (args, context) {
     
     var bet = JSON.parse(titleData.Data.bet);
 
+    log.debug("bet", betId);
+
     bet.forEach(function(item) {
 
+        log.debug("item ", item.id);
+
+
         if(item.id == betId){
+
+            log.debug("isset ", item.id);
+
 
             var investoryData = server.GetUserInventory({
                 PlayFabId: currentPlayerId
             });
 
             var coins = investoryData.VirtualCurrency.CO;
-            
+
             if(coins > item.coins){
                 return {code: 200, text: "User can match find"};
             }
