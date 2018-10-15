@@ -83,9 +83,8 @@ handlers.MatchCanFind = function (args, context) {
 
     bet.forEach(function(element) {
 
+        log.debug("element:", element);
 
-
-        console.log(element);
     });
     
     
