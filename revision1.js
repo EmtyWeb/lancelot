@@ -230,6 +230,34 @@ handlers.matchEnd = function (args, context) {
     return {code: 200, text: "Match end"};
 };
 
+/**
+ * @param args
+ * @param context
+ * @returns {*}
+ */
+handlers.MatchWin = function (args, context) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    return {code: 200, text: "Match win"};
+};
+
+/**
+ * Match lose
+ * @param args
+ * @param context
+ * @returns {*}
+ */
+handlers.MatchLose = function (args, context) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    return {code: 200, text: "Match lose"};
+};
 
 /**
  * Send code to player
