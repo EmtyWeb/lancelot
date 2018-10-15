@@ -146,9 +146,14 @@ handlers.MatchCreated = function (args, context) {
         Permission: "Public"
     });
 
+    var players = [p1];
+    if(p2 != null){
+        players.push(p2)
+    }
+
     server.AddSharedGroupMembers({
         SharedGroupId: matchId,
-        PlayFabIds: [p1, p2]
+        PlayFabIds: players
     });
 
     log.debug("Match Created: " + matchId);
