@@ -272,9 +272,9 @@ handlers.MatchEnd = function (args, context) {
     }
 
     var sharedData = server.GetSharedGroupData({
-        "SharedGroupId": matchId,
-        "Keys": [
-            "betId"
+        SharedGroupId: matchId,
+        Keys: [
+            betId
         ]
     });
 
