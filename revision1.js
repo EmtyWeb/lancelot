@@ -121,7 +121,14 @@ handlers.MatchCreated = function (args, context) {
 
     var betId = args.betId;
     var matchId = args.matchId;
-    if (!args || (args && (typeof betId == "undefined" || typeof matchId == "undefined"))) {
+    var p1 = args.p1;
+    var p2 = args.p2;
+    if (!args || (args && (
+            typeof betId == "undefined"
+            || typeof matchId == "undefined"
+            || typeof p1 == "undefined"
+            || typeof p2 == "undefined"
+        ))) {
         return {code: 400, text: "Not valid params"};
     }
 
