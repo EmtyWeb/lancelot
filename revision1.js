@@ -74,13 +74,13 @@ handlers.MatchCanFind = function (args, context) {
         ]
     });
 
-    log.debug("title data:", titleData);
+    log.debug("title data:", titleData.Data.Data);
 
     var investoryData = server.GetUserInventory({
         PlayFabId: currentPlayerId
     });
 
-    log.debug("investory data:", investoryData.Data.VirtualCurrency.CO);
+    log.debug("investory data:", investoryData.Data); //.VirtualCurrency.CO
 
     return {code: 200, text: "User can match find"};
 };
