@@ -167,12 +167,22 @@ handlers.MatchCreated = function (args, context) {
  * @constructor
  */
 handlers.MatchJoined = function (args) {
+
     log.debug("Match Joined - Game: " + args);
 
-    var betId = args.betId;
-    if (!args || (args && typeof betId == "undefined")) {
+    var matchId = args.matchId;
+    if (!args || (args && typeof matchId == "undefined")) {
         return {code: 400, text: "Not valid params"};
     }
+
+    var sharedData = server.GetSharedGroupData({
+        "SharedGroupId": matchId,
+        "Keys": [
+            "betId"
+        ]
+    });
+
+    log.debug("data: ", sharedData);
 
     var titleData = server.GetTitleData({
         "Keys": [
