@@ -74,7 +74,7 @@ handlers.MatchCanFind = function (args, context) {
         ]
     });
 
-    log.debug("title data:", json_decode(titleData.Data.bet));
+    log.debug("title data:", JSON.parse(titleData.Data.bet));
 
     var investoryData = server.GetUserInventory({
         PlayFabId: currentPlayerId
