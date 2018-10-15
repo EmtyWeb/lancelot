@@ -68,7 +68,21 @@ handlers.MatchCanFind = function (args, context) {
 
     log.debug("type:", typeof(args));
 
-    return {code: 200, text: "Match end"};
+    var titleData = server.GetTitleData({
+        "Keys": [
+            "bit"
+        ]
+    });
+
+    log.debug("title data:", titleData);
+
+    var investoryData = server.GetUserInventory({
+        PlayFabId: currentPlayerId
+    });
+
+    log.debug("investory data:", investoryData);
+
+    return {code: 200, text: "User can match find"};
 };
 
 
