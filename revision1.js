@@ -156,17 +156,6 @@ handlers.MatchCreated = function (args, context) {
         PlayFabIds: players
     });
 
-    // var sharedData = server.GetSharedGroupData({
-    //     "SharedGroupId": matchId,
-    //     "Keys": [
-    //         "betId"
-    //     ]
-    // });
-    //
-    // log.debug("data: ", sharedData);
-
-    // var betId = sharedData.Data.betId.Value;
-
     log.debug("bet", betId);
 
     var titleData = server.GetTitleData({
@@ -281,10 +270,16 @@ handlers.MatchEnd = function (args, context) {
         return {code: 400, text: "Not valid params"};
     }
 
-    var betId = args.betId;
-    if (!args || (args && typeof betId == "undefined")) {
-        return {code: 400, text: "Not valid params"};
-    }
+    var sharedData = server.GetSharedGroupData({
+        "SharedGroupId": matchId,
+        "Keys": [
+            "betId"
+        ]
+    });
+
+    log.debug("data: ", sharedData);
+
+    var betId = sharedData.Data.betId.Value;
 
     var titleData = server.GetTitleData({
         "Keys": [
