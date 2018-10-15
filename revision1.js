@@ -83,29 +83,37 @@ handlers.MatchCanFind = function (args, context) {
 
     log.debug("bet", betId);
 
-    bet.forEach(function(item) {
-
-        log.debug("item ", item.id);
-
-
-        if(item.id == betId){
-
-            log.debug("isset ", item.id);
-
-
-            var investoryData = server.GetUserInventory({
-                PlayFabId: currentPlayerId
-            });
-
-            var coins = investoryData.VirtualCurrency.CO;
-
-            if(coins > item.coins){
-                return {code: 200, text: "User can match find"};
-            }
-
-            return {code: 400, text: "Not enough money"};
-        }
+    var test = bet.some(function(el) {
+        return el.id === betId;
     });
+
+    log.debug("test:", test);
+    
+
+
+    // bet.forEach(function(item) {
+    //
+    //     log.debug("item ", item.id);
+    //
+    //
+    //     if(item.id == betId){
+    //
+    //         log.debug("isset ", item.id);
+    //
+    //
+    //         var investoryData = server.GetUserInventory({
+    //             PlayFabId: currentPlayerId
+    //         });
+    //
+    //         var coins = investoryData.VirtualCurrency.CO;
+    //
+    //         if(coins > item.coins){
+    //             return {code: 200, text: "User can match find"};
+    //         }
+    //
+    //         return {code: 400, text: "Not enough money"};
+    //     }
+    // });
 
     return {code: 400, text: "Not find bet"};
 };
