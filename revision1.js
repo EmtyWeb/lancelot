@@ -1,4 +1,7 @@
-
+/**
+ * Cloud script game
+ * For lancelot game
+ */
 
 /**
  * Register player
@@ -6,7 +9,7 @@
  * @param context
  * @returns {*}
  */
-handlers.register = function (args, context) {
+handlers.Register = function (args, context) {
 
     log.debug("arg:", args);
 
@@ -29,6 +32,12 @@ handlers.register = function (args, context) {
         }
     };
 
+    server.AddUserVirtualCurrency({
+        PlayFabId: currentPlayerId,
+        VirtualCurrency: "CO",
+        Amount: 1000
+    });
+
     server.UpdateUserData({
         PlayFabId: currentPlayerId,
         Data: playerStructure.data
@@ -48,51 +57,111 @@ handlers.register = function (args, context) {
 };
 
 /**
- * Register player
+ * Start match
  * @param args
  * @param context
  * @returns {*}
  */
-handlers.registerPlayer = function (args, context) {
+handlers.MatchCanFind = function (args, context) {
 
     log.debug("arg:", args);
 
     log.debug("type:", typeof(args));
 
-    var playerStructure = {
-        data: {
-            phone: null,
-            color: 1,
-            helmet: 1
-        },
-        readOnly: {
-            level: 0,
-            exp: 0
-        },
-        internal: {
-            code: null,
-            phone_verified_timestamp: null,
-            phone_verified: false
-        }
-    };
-
-    server.UpdateUserData({
-        PlayFabId: currentPlayerId,
-        Data: playerStructure.data
-    });
-
-    server.UpdateUserReadOnlyData({
-        PlayFabId: currentPlayerId,
-        Data: playerStructure.readOnly
-    });
-
-    server.UpdateUserInternalData({
-        PlayFabId: currentPlayerId,
-        Data: playerStructure.internal
-    });
-
-    return {code: 200, text: "Register user"};
+    return {code: 200, text: "Match end"};
 };
+
+
+
+/**
+ * Match created
+ * @param args
+ * @param context
+ * @returns {*}
+ */
+handlers.MatchCreated = function (args, context) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    log.debug("Match Created - Game: " + args.GameId);
+
+    return {code: 200, text: "Match start"};
+};
+
+/**
+ *
+ * @param args
+ * @constructor
+ */
+handlers.MatchJoined = function (args) {
+    log.debug("Match Joined - Game: " + args.GameId);
+};
+
+/**
+ *
+ * @param args
+ * @constructor
+ */
+handlers.MatchLeft = function (args) {
+    log.debug("Match Left - Game: " + args.GameId);
+};
+
+/**
+ *
+ * @param args
+ * @constructor
+ */
+handlers.MatchClosed = function (args) {
+    log.debug("Match Closed - Game: " + args.GameId);
+};
+
+
+/**
+ * Start match
+ * @param args
+ * @param context
+ * @returns {*}
+ */
+handlers.matchStart = function (args, context) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    log.debug("Match start - Game: " + args.GameId);
+
+    return {code: 200, text: "Match start"};
+};
+
+/**
+ * Start match
+ * @param args
+ * @param context
+ * @returns {*}
+ */
+handlers.matchEnd = function (args, context) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    log.debug("Match end - Game: " + args.GameId);
+
+    return {code: 200, text: "Match end"};
+};
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Send code to player
@@ -493,31 +562,7 @@ handlers.unlockHighSkillContent = function (args, context) {
 
 
 // Triggered automatically when a Photon room is first created
-handlers.RoomCreated = function (args) {
-    log.debug("Room Created - Game: " + args.GameId + " MaxPlayers: " + args.CreateOptions.MaxPlayers);
-};
 
-// Triggered automatically when a player joins a Photon room
-handlers.RoomJoined = function (args) {
-    log.debug("Room Joined - Game: " + args.GameId + " PlayFabId: " + args.UserId);
-};
-
-// Triggered automatically when a player leaves a Photon room
-handlers.RoomLeft = function (args) {
-    log.debug("Room Left - Game: " + args.GameId + " PlayFabId: " + args.UserId);
-};
-
-// Triggered automatically when a Photon room closes
-// Note: currentPlayerId is undefined in this function
-handlers.RoomClosed = function (args) {
-    log.debug("Room Closed - Game: " + args.GameId);
-};
-
-// Triggered automatically when a Photon room game property is updated.
-// Note: currentPlayerId is undefined in this function
-handlers.RoomPropertyUpdated = function (args) {
-    log.debug("Room Property Updated - Game: " + args.GameId);
-};
 
 // Triggered by calling "OpRaiseEvent" on the Photon client. The "args.Data" property is 
 // set to the value of the "customEventContent" HashTable parameter, so you can use
