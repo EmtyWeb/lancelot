@@ -261,6 +261,8 @@ handlers.MatchEnd = function (args, context) {
                 ]
             });
 
+            log.debug("read ", readOnlyData);
+
             exp = (typeof readOnlyData.exp != "undefined")? readOnlyData.exp + exp: exp;
 
             log.debug("status ", status);
