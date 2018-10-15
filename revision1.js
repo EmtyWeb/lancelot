@@ -280,7 +280,7 @@ handlers.MatchEnd = function (args, context) {
 
     log.debug("data: ", sharedData);
 
-    var betId = sharedData.Data.betId.Value;
+    var betId = sharedData.Data.betId;
 
     var titleData = server.GetTitleData({
         "Keys": [
