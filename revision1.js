@@ -67,15 +67,31 @@ handlers.MatchCanFind = function (args, context) {
     log.debug("arg:", args);
 
     log.debug("type:", typeof(args));
-
+    
+    var betId = args.betId;
+    if (!args || (args && typeof betId == "undefined")){
+        return { code: 400, text: "Not valid params"};
+    }
+    
     var titleData = server.GetTitleData({
         "Keys": [
             "bet"
         ]
     });
+    
+    var bet = JSON.parse(titleData.Data.bet);
 
-    log.debug("title data:", JSON.parse(titleData.Data.bet));
+    bet.forEach(function(element) {
 
+
+
+        console.log(element);
+    });
+    
+    
+
+    
+    
     var investoryData = server.GetUserInventory({
         PlayFabId: currentPlayerId
     });
