@@ -268,7 +268,7 @@ handlers.MatchEnd = function (args, context) {
             var level = 0;
             for (var j = 0; j < levels.length; j++) {
                 if (exp > levels[j].exp) {
-                    level = levels[j].id;
+                    level = levels[j].lvl;
                 }
             }
 
