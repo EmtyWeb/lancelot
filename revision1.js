@@ -261,14 +261,16 @@ handlers.MatchEnd = function (args, context) {
                 ]
             });
 
+            exp = (typeof readOnlyData.exp != "undefined")? readOnlyData.exp + exp: exp;
+
             log.debug("status ", status);
             log.debug("coins ", coins);
-            log.debug("exp ", readOnlyData.exp + exp);
+            log.debug("exp ", exp);
 
             server.UpdateUserReadOnlyData({
                 PlayFabId: currentPlayerId,
                 Data: {
-                    exp: parseInt(readOnlyData.exp) + exp
+                    exp: exp
                 }
             });
 
