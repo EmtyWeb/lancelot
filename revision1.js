@@ -218,6 +218,8 @@ function withdrawCoins(playFabId, amount) {
             Amount: amount
         });
 
+        log.debug("spent ", amount);
+
         return true;
     }
 
