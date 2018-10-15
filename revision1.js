@@ -129,6 +129,16 @@ handlers.MatchCreated = function (args, context) {
         SharedGroupId: "Match #" + matchId
     });
 
+    server.UpdateSharedGroupData({
+        SharedGroupId: "Match #" + matchId,
+        Data: {
+            betId: betId,
+            p1: p1,
+            p2: p2
+        },
+        Permission: "Public"
+    });
+
     log.debug("Match Created: " + matchId);
 
     return {code: 200, text: "Match start " + matchId};
