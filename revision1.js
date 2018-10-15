@@ -272,6 +272,8 @@ handlers.MatchEnd = function (args, context) {
                 }
             }
 
+            log.debug("level ", level);
+
             server.UpdateUserReadOnlyData({
                 PlayFabId: currentPlayerId,
                 Data: {
