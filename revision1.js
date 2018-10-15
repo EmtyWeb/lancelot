@@ -87,7 +87,7 @@ handlers.MatchCanFind = function (args, context) {
 
         if (bet[i].id == betId) {
 
-            log.debug("isset ", bet[i].id);
+            log.debug("bet find ", bet[i].id);
 
             var investoryData = server.GetUserInventory({
                 PlayFabId: currentPlayerId
@@ -119,7 +119,7 @@ handlers.MatchCreated = function (args, context) {
 
     log.debug("type:", typeof(args));
 
-    log.debug("Match Created - Game: " + args.GameId);
+    log.debug("Match Created - Game: " + args);
 
     return {code: 200, text: "Match start"};
 };
@@ -130,7 +130,51 @@ handlers.MatchCreated = function (args, context) {
  * @constructor
  */
 handlers.MatchJoined = function (args) {
-    log.debug("Match Joined - Game: " + args.GameId);
+    log.debug("Match Joined - Game: " + args);
+
+    var betId = args.betId;
+    if (!args || (args && typeof betId == "undefined")) {
+        return {code: 400, text: "Not valid params"};
+    }
+
+    var titleData = server.GetTitleData({
+        "Keys": [
+            "bet"
+        ]
+    });
+
+    var bet = JSON.parse(titleData.Data.bet);
+
+    log.debug("bet", betId);
+
+    for (var i = 0; i < bet.length; i++) {
+
+        if (bet[i].id == betId) {
+
+            log.debug("bet find ", bet[i].id);
+
+            var investoryData = server.GetUserInventory({
+                PlayFabId: currentPlayerId
+            });
+
+            var coins = investoryData.VirtualCurrency.CO;
+
+            if (coins > bet[i].coins) {
+
+                server.SubtractUserVirtualCurrency({
+                    PlayFabId: currentPlayerId,
+                    VirtualCurrency: "CO",
+                    Amount: bet[i].coins
+                });
+
+                return {code: 200, text: "User can match find"};
+            }
+
+            return {code: 400, text: "Not enough money"};
+        }
+    }
+
+    return {code: 400, text: "Not find bet"};
 };
 
 /**
