@@ -32,11 +32,11 @@ handlers.registerPlayer = function (args, context) {
         }
     };
 
-    server.AddUserVirtualCurrency({
-        PlayFabId: currentPlayerId,
-        VirtualCurrency: "CO",
-        Amount: 1000
-    });
+    // server.AddUserVirtualCurrency({
+    //     PlayFabId: currentPlayerId,
+    //     VirtualCurrency: "CO",
+    //     Amount: 1000
+    // });
 
     server.UpdateUserData({
         PlayFabId: currentPlayerId,
