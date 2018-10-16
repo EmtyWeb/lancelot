@@ -9,7 +9,7 @@
  * @param context
  * @returns {*}
  */
-handlers.Register = function (args, context) {
+handlers.registerPlayer = function (args, context) {
 
     log.debug("arg:", args);
 
