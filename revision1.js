@@ -64,8 +64,6 @@ handlers.registerPlayer = function (args, context) {
  */
 handlers.MatchCanFind = function (args, context) {
 
-    return {code: 200, text: "User can match find"};
-
     log.debug("arg:", args);
 
     log.debug("type:", typeof(args));
@@ -116,8 +114,6 @@ handlers.MatchCanFind = function (args, context) {
  * @returns {*}
  */
 handlers.MatchCreated = function (args, context) {
-
-    return {code: 200, text: "Match start"};
 
     log.debug("arg:", args);
 
@@ -263,8 +259,6 @@ handlers.matchStart = function (args, context) {
  * @returns {*}
  */
 handlers.MatchEnd = function (args, context) {
-
-    return {code: 200, text: "Ok"};
 
     log.debug("arg:", args);
 
