@@ -260,6 +260,8 @@ handlers.matchStart = function (args, context) {
  */
 handlers.MatchEnd = function (args, context) {
 
+    return {code: 200, text: "Ok"};
+
     log.debug("arg:", args);
 
     log.debug("type:", typeof(args));
