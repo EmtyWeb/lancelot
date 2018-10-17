@@ -118,13 +118,13 @@ handlers.MatchCreated = function (args, context) {
 
     var betId = args.betId;
     var matchId = args.matchId;
-    var p1 = args.p1;
-    var p2 = args.p2;
+    // var p1 = args.p1;
+    // var p2 = args.p2;
     if (!args || (args && (
             typeof betId == "undefined"
             || typeof matchId == "undefined"
-            || typeof p1 == "undefined"
-            || typeof p2 == "undefined"
+            // || typeof p1 == "undefined"
+            // || typeof p2 == "undefined"
         ))) {
         return {code: 400, text: "Not valid params"};
     }
@@ -137,50 +137,50 @@ handlers.MatchCreated = function (args, context) {
         SharedGroupId: matchId,
         Data: {
             betId: betId,
-            p1: p1,
-            p2: p2
+            // p1: p1,
+            // p2: p2
         },
         Permission: "Public"
     });
 
-    var players = [p1];
-    if(p2 != null){
-        players.push(p2)
-    }
+    // var players = [p1];
+    // if(p2 != null){
+    //     players.push(p2)
+    // }
+    //
+    // server.AddSharedGroupMembers({
+    //     SharedGroupId: matchId,
+    //     PlayFabIds: players
+    // });
 
-    server.AddSharedGroupMembers({
-        SharedGroupId: matchId,
-        PlayFabIds: players
-    });
-
-    log.debug("bet", betId);
-
-    var titleData = server.GetTitleData({
-        "Keys": [
-            "bet",
-            "levels"
-        ]
-    });
-
-    var bet = JSON.parse(titleData.Data.bet);
-
-    for (var i = 0; i < bet.length; i++) {
-
-        if (bet[i].id == betId) {
-
-            log.debug("bet find ", bet[i].id);
-
-            if(!withdrawCoins(p1, bet[i].coins)){
-                return {code: 400, text: "Not enough money"};
-            }
-
-            if(p2 != null){
-                if(!withdrawCoins(p2, bet[i].coins)){
-                    return {code: 400, text: "Not enough money"};
-                }
-            }
-        }
-    }
+    // log.debug("bet", betId);
+    //
+    // var titleData = server.GetTitleData({
+    //     "Keys": [
+    //         "bet",
+    //         "levels"
+    //     ]
+    // });
+    //
+    // var bet = JSON.parse(titleData.Data.bet);
+    //
+    // for (var i = 0; i < bet.length; i++) {
+    //
+    //     if (bet[i].id == betId) {
+    //
+    //         log.debug("bet find ", bet[i].id);
+    //
+    //         if(!withdrawCoins(p1, bet[i].coins)){
+    //             return {code: 400, text: "Not enough money"};
+    //         }
+    //
+    //         if(p2 != null){
+    //             if(!withdrawCoins(p2, bet[i].coins)){
+    //                 return {code: 400, text: "Not enough money"};
+    //             }
+    //         }
+    //     }
+    // }
 
     log.debug("Match Created: " + matchId);
 
