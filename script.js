@@ -11,15 +11,12 @@
  */
 handlers.registerPlayer = function (args, context) {
 
-    log.debug("arg:", args);
-
-    log.debug("type:", typeof(args));
-
     var playerStructure = {
         data: {
             phone: null,
             color: 1,
-            helmet: 1
+            helmet: 1,
+            tutorial: true
         },
         readOnly: {
             level: 0,
@@ -32,11 +29,11 @@ handlers.registerPlayer = function (args, context) {
         }
     };
 
-    server.AddUserVirtualCurrency({
-        PlayFabId: currentPlayerId,
-        VirtualCurrency: "CO",
-        Amount: 1000
-    });
+    // server.AddUserVirtualCurrency({
+    //     PlayFabId: currentPlayerId,
+    //     VirtualCurrency: "CO",
+    //     Amount: 1000
+    // });
 
     server.UpdateUserData({
         PlayFabId: currentPlayerId,
@@ -121,14 +118,12 @@ handlers.MatchCreated = function (args, context) {
 
     var betId = args.betId;
     var matchId = args.matchId;
-    var p1 = args.p1;
-    var p2 = args.p2;
-    if (!args || (args && (
-            typeof betId == "undefined"
-            || typeof matchId == "undefined"
-            || typeof p1 == "undefined"
-            || typeof p2 == "undefined"
-        ))) {
+    if (!args || (args && (typeof betId == "undefined" || typeof matchId == "undefined"))) {
+
+
+        log.debug("arg1:", betId);
+        log.debug("arg2:", matchId);
+
         return {code: 400, text: "Not valid params"};
     }
 
@@ -140,11 +135,47 @@ handlers.MatchCreated = function (args, context) {
         SharedGroupId: matchId,
         Data: {
             betId: betId,
-            p1: p1,
-            p2: p2
         },
         Permission: "Public"
     });
+
+    log.debug("Match Created: " + matchId);
+
+    return {code: 200, text: "Match start " + matchId};
+};
+
+/**
+ *
+ * @param args
+ * @constructor
+ */
+handlers.MatchStart = function (args) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    var matchId = args.matchId;
+    var p1 = args.p1;
+    var p2 = args.p2;
+    if (!args || (args && (
+            typeof matchId == "undefined"
+            || typeof p1 == "undefined"
+            || typeof p2 == "undefined"
+        ))) {
+        return {code: 400, text: "Not valid params"};
+    }
+
+    var sharedData = server.GetSharedGroupData({
+        SharedGroupId: matchId,
+        Keys: [
+            "betId"
+        ]
+    });
+
+    log.debug("data: ", sharedData);
+
+    var betId = sharedData.Data.betId.Value;
 
     var players = [p1];
     if(p2 != null){
@@ -160,8 +191,7 @@ handlers.MatchCreated = function (args, context) {
 
     var titleData = server.GetTitleData({
         "Keys": [
-            "bet",
-            "levels"
+            "bet"
         ]
     });
 
@@ -171,59 +201,44 @@ handlers.MatchCreated = function (args, context) {
 
         if (bet[i].id == betId) {
 
-            log.debug("bet find ", bet[i].id);
+            var coins = bet[i].coins;
 
-            if(!withdrawCoins(p1, bet[i].coins)){
+            log.debug("bet find ", coins);
+
+            if(getCoins(p1) < coins || (players.length > 1 && getCoins(p2) < coins)){
                 return {code: 400, text: "Not enough money"};
             }
 
+            withdrawCoins(p1, coins);
+
             if(p2 != null){
-                if(!withdrawCoins(p2, bet[i].coins)){
-                    return {code: 400, text: "Not enough money"};
-                }
+                withdrawCoins(p2, coins);
             }
+
+            break;
         }
     }
-
-    log.debug("Match Created: " + matchId);
-
-    return {code: 200, text: "Match start " + matchId};
 };
 
-
-function withdrawCoins(playFabId, amount) {
+function getCoins(playFabId) {
 
     var investoryData = server.GetUserInventory({
         PlayFabId: playFabId
     });
 
-    var coins = investoryData.VirtualCurrency.CO;
-
-    if (coins > amount) {
-
-        server.SubtractUserVirtualCurrency({
-            PlayFabId: playFabId,
-            VirtualCurrency: "CO",
-            Amount: amount
-        });
-
-        log.debug("spent ", amount);
-
-        return true;
-    }
-
-    return false;
+    return investoryData.VirtualCurrency.CO;
 }
 
+function withdrawCoins(playFabId, amount) {
 
-/**
- *
- * @param args
- * @constructor
- */
-handlers.MatchLeft = function (args) {
-    log.debug("Match Left - Game: " + args.GameId);
-};
+    server.SubtractUserVirtualCurrency({
+        PlayFabId: playFabId,
+        VirtualCurrency: "CO",
+        Amount: amount
+    });
+
+    log.debug("spent ", amount);
+}
 
 /**
  *
@@ -232,24 +247,6 @@ handlers.MatchLeft = function (args) {
  */
 handlers.MatchClosed = function (args) {
     log.debug("Match Closed - Game: " + args.GameId);
-};
-
-
-/**
- * Start match
- * @param args
- * @param context
- * @returns {*}
- */
-handlers.matchStart = function (args, context) {
-
-    log.debug("arg:", args);
-
-    log.debug("type:", typeof(args));
-
-    log.debug("Match start - Game: " + args.GameId);
-
-    return {code: 200, text: "Match start"};
 };
 
 /**
@@ -521,7 +518,7 @@ handlers.forMatch = function (args, context) {
 // "context" contains additional information when the Cloud Script function is called from a PlayStream action.
 handlers.helloWorld = function (args, context) {
 
-    // The pre-defined "currentPlayerId" variable is initialized to the PlayFab ID of the player logged-in on the game client. 
+    // The pre-defined "currentPlayerId" variable is initialized to the PlayFab ID of the player logged-in on the game client.
     // Cloud Script handles authenticating the player automatically.
     var message = "Hello " + currentPlayerId + "!";
 
@@ -538,10 +535,10 @@ handlers.helloWorld = function (args, context) {
     log.debug('test');
 
 
-    // The value you return from a Cloud Script function is passed back 
+    // The value you return from a Cloud Script function is passed back
     // to the game client in the ExecuteCloudScript API response, along with any log statements
     // and additional diagnostic information, such as any errors returned by API calls or external HTTP
-    // requests. They are also included in the optional player_executed_cloudscript PlayStream event 
+    // requests. They are also included in the optional player_executed_cloudscript PlayStream event
     // generated by the function execution.
     // (https://api.playfab.com/playstream/docs/PlayStreamEventModels/player/player_executed_cloudscript)
     return {messageValue: 'test'};
@@ -555,10 +552,10 @@ handlers.makeAPICall = function (args, context) {
             Value: 2
         }]
     };
-    // The pre-defined "server" object has functions corresponding to each PlayFab server API 
-    // (https://api.playfab.com/Documentation/Server). It is automatically 
-    // authenticated as your title and handles all communication with 
-    // the PlayFab API, so you don't have to write extra code to issue HTTP requests. 
+    // The pre-defined "server" object has functions corresponding to each PlayFab server API
+    // (https://api.playfab.com/Documentation/Server). It is automatically
+    // authenticated as your title and handles all communication with
+    // the PlayFab API, so you don't have to write extra code to issue HTTP requests.
     var playerStatResult = server.UpdatePlayerStatistics(request);
 };
 
@@ -588,7 +585,7 @@ handlers.makeHTTPRequest = function (args, context) {
 // PlayStream event action. (https://playfab.com/introducing-playstream/)
 handlers.handlePlayStreamEventAndProfile = function (args, context) {
 
-    // The event that triggered the action 
+    // The event that triggered the action
     // (https://api.playfab.com/playstream/docs/PlayStreamEventModels)
     var psEvent = context.playStreamEvent;
 
@@ -609,10 +606,10 @@ handlers.handlePlayStreamEventAndProfile = function (args, context) {
 // This is a function that the game client would call whenever a player completes
 // a level. It updates a setting in the player's data that only game server
 // code can write - it is read-only on the client - and it updates a player
-// statistic that can be used for leaderboards. 
+// statistic that can be used for leaderboards.
 //
-// A funtion like this could be extended to perform validation on the 
-// level completion data to detect cheating. It could also do things like 
+// A funtion like this could be extended to perform validation on the
+// level completion data to detect cheating. It could also do things like
 // award the player items from the game catalog based on their performance.
 handlers.completedLevel = function (args, context) {
     var level = args.levelName;
@@ -637,7 +634,7 @@ handlers.completedLevel = function (args, context) {
 };
 
 
-// In addition to the Cloud Script handlers, you can define your own functions and call them from your handlers. 
+// In addition to the Cloud Script handlers, you can define your own functions and call them from your handlers.
 // This makes it possible to share code between multiple handlers and to improve code organization.
 handlers.updatePlayerMove = function (args) {
     var validMove = processPlayerMove(args);
@@ -648,9 +645,9 @@ handlers.updatePlayerMove = function (args) {
 // This is a helper function that verifies that the player's move wasn't made
 // too quickly following their previous move, according to the rules of the game.
 // If the move is valid, then it updates the player's statistics and profile data.
-// This function is called from the "UpdatePlayerMove" handler above and also is 
+// This function is called from the "UpdatePlayerMove" handler above and also is
 // triggered by the "RoomEventRaised" Photon room event in the Webhook handler
-// below. 
+// below.
 //
 // For this example, the script defines the cooldown period (playerMoveCooldownInSeconds)
 // as 15 seconds. A recommended approach for values like this would be to create them in Title
@@ -708,7 +705,7 @@ function processPlayerMove(playerMove) {
 
 // This is an example of using PlayStream real-time segmentation to trigger
 // game logic based on player behavior. (https://playfab.com/introducing-playstream/)
-// The function is called when a player_statistic_changed PlayStream event causes a player 
+// The function is called when a player_statistic_changed PlayStream event causes a player
 // to enter a segment defined for high skill players. It sets a key value in
 // the player's internal data which unlocks some new content for the player.
 handlers.unlockHighSkillContent = function (args, context) {
@@ -727,11 +724,11 @@ handlers.unlockHighSkillContent = function (args, context) {
 
 // Photon Webhooks Integration
 //
-// The following functions are examples of Photon Cloud Webhook handlers. 
+// The following functions are examples of Photon Cloud Webhook handlers.
 // When you enable the Photon Add-on (https://playfab.com/marketplace/photon/)
 // in the Game Manager, your Photon applications are automatically configured
-// to authenticate players using their PlayFab accounts and to fire events that 
-// trigger your Cloud Script Webhook handlers, if defined. 
+// to authenticate players using their PlayFab accounts and to fire events that
+// trigger your Cloud Script Webhook handlers, if defined.
 // This makes it easier than ever to incorporate multiplayer server logic into your game.
 
 
