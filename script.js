@@ -215,7 +215,7 @@ handlers.MatchStart = function (args) {
                 withdrawCoins(p2, coins);
             }
 
-            break;
+            return {code: 200, text: "Ok"};
         }
     }
 };
