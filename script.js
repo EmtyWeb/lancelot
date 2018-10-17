@@ -134,14 +134,14 @@ handlers.MatchCreated = function (args, context) {
     server.UpdateSharedGroupData({
         SharedGroupId: matchId,
         Data: {
-            betId: betId,
+            betId: betId
         },
         Permission: "Public"
     });
 
     log.debug("Match Created: " + matchId);
 
-    return {code: 200, text: "Match start " + matchId};
+    return {code: 200, text: "Match start " + matchId, data: {matchId: matchId}};
 };
 
 /**
