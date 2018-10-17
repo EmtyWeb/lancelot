@@ -119,6 +119,11 @@ handlers.MatchCreated = function (args, context) {
     var betId = args.betId;
     var matchId = args.matchId;
     if (!args || (args && (typeof betId == "undefined" || typeof matchId == "undefined"))) {
+
+
+        log.debug("arg1:", betId);
+        log.debug("arg2:", matchId);
+
         return {code: 400, text: "Not valid params"};
     }
 
