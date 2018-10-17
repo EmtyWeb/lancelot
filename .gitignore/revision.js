@@ -11,10 +11,6 @@
  */
 handlers.registerPlayer = function (args, context) {
 
-    log.debug("arg:", args);
-
-    log.debug("type:", typeof(args));
-
     var playerStructure = {
         data: {
             phone: null,
