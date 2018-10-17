@@ -118,14 +118,7 @@ handlers.MatchCreated = function (args, context) {
 
     var betId = args.betId;
     var matchId = args.matchId;
-    // var p1 = args.p1;
-    // var p2 = args.p2;
-    if (!args || (args && (
-            typeof betId == "undefined"
-            || typeof matchId == "undefined"
-            // || typeof p1 == "undefined"
-            // || typeof p2 == "undefined"
-        ))) {
+    if (!args || (args && (typeof betId == "undefined" || typeof matchId == "undefined"))) {
         return {code: 400, text: "Not valid params"};
     }
 
@@ -137,90 +130,110 @@ handlers.MatchCreated = function (args, context) {
         SharedGroupId: matchId,
         Data: {
             betId: betId,
-            // p1: p1,
-            // p2: p2
         },
         Permission: "Public"
     });
-
-    // var players = [p1];
-    // if(p2 != null){
-    //     players.push(p2)
-    // }
-    //
-    // server.AddSharedGroupMembers({
-    //     SharedGroupId: matchId,
-    //     PlayFabIds: players
-    // });
-
-    // log.debug("bet", betId);
-    //
-    // var titleData = server.GetTitleData({
-    //     "Keys": [
-    //         "bet",
-    //         "levels"
-    //     ]
-    // });
-    //
-    // var bet = JSON.parse(titleData.Data.bet);
-    //
-    // for (var i = 0; i < bet.length; i++) {
-    //
-    //     if (bet[i].id == betId) {
-    //
-    //         log.debug("bet find ", bet[i].id);
-    //
-    //         if(!withdrawCoins(p1, bet[i].coins)){
-    //             return {code: 400, text: "Not enough money"};
-    //         }
-    //
-    //         if(p2 != null){
-    //             if(!withdrawCoins(p2, bet[i].coins)){
-    //                 return {code: 400, text: "Not enough money"};
-    //             }
-    //         }
-    //     }
-    // }
 
     log.debug("Match Created: " + matchId);
 
     return {code: 200, text: "Match start " + matchId};
 };
 
-
-function withdrawCoins(playFabId, amount) {
-
-    var investoryData = server.GetUserInventory({
-        PlayFabId: playFabId
-    });
-
-    var coins = investoryData.VirtualCurrency.CO;
-
-    if (coins > amount) {
-
-        server.SubtractUserVirtualCurrency({
-            PlayFabId: playFabId,
-            VirtualCurrency: "CO",
-            Amount: amount
-        });
-
-        log.debug("spent ", amount);
-
-        return true;
-    }
-
-    return false;
-}
-
-
 /**
  *
  * @param args
  * @constructor
  */
-handlers.MatchLeft = function (args) {
-    log.debug("Match Left - Game: " + args.GameId);
+handlers.MatchStart = function (args) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    var matchId = args.matchId;
+    var p1 = args.p1;
+    var p2 = args.p2;
+    if (!args || (args && (
+            typeof matchId == "undefined"
+            || typeof p1 == "undefined"
+            || typeof p2 == "undefined"
+        ))) {
+        return {code: 400, text: "Not valid params"};
+    }
+
+    var sharedData = server.GetSharedGroupData({
+        SharedGroupId: matchId,
+        Keys: [
+            "betId"
+        ]
+    });
+
+    log.debug("data: ", sharedData);
+
+    var betId = sharedData.Data.betId.Value;
+
+    var players = [p1];
+    if(p2 != null){
+        players.push(p2)
+    }
+
+    server.AddSharedGroupMembers({
+        SharedGroupId: matchId,
+        PlayFabIds: players
+    });
+
+    log.debug("bet", betId);
+
+    var titleData = server.GetTitleData({
+        "Keys": [
+            "bet"
+        ]
+    });
+
+    var bet = JSON.parse(titleData.Data.bet);
+
+    for (var i = 0; i < bet.length; i++) {
+
+        if (bet[i].id == betId) {
+
+            var coins = bet[i].coins;
+
+            log.debug("bet find ", coins);
+
+            if(getCoins(p1) < coins || (players.length > 1 && getCoins(p2) < coins)){
+                return {code: 400, text: "Not enough money"};
+            }
+
+            withdrawCoins(p1, coins);
+
+            if(p2 != null){
+                withdrawCoins(p2, coins);
+            }
+
+            break;
+        }
+    }
 };
+
+function getCoins(playFabId) {
+
+    var investoryData = server.GetUserInventory({
+        PlayFabId: playFabId
+    });
+
+    return investoryData.VirtualCurrency.CO;
+}
+
+function withdrawCoins(playFabId, amount) {
+
+    server.SubtractUserVirtualCurrency({
+        PlayFabId: playFabId,
+        VirtualCurrency: "CO",
+        Amount: amount
+    });
+
+    log.debug("spent ", amount);
+}
 
 /**
  *
@@ -229,24 +242,6 @@ handlers.MatchLeft = function (args) {
  */
 handlers.MatchClosed = function (args) {
     log.debug("Match Closed - Game: " + args.GameId);
-};
-
-
-/**
- * Start match
- * @param args
- * @param context
- * @returns {*}
- */
-handlers.matchStart = function (args, context) {
-
-    log.debug("arg:", args);
-
-    log.debug("type:", typeof(args));
-
-    log.debug("Match start - Game: " + args.GameId);
-
-    return {code: 200, text: "Match start"};
 };
 
 /**
