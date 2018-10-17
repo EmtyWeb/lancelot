@@ -19,7 +19,8 @@ handlers.registerPlayer = function (args, context) {
         data: {
             phone: null,
             color: 1,
-            helmet: 1
+            helmet: 1,
+            tutorial: true
         },
         readOnly: {
             level: 0,
