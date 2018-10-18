@@ -9,7 +9,7 @@
  * @param context
  * @returns {*}
  */
-handlers.registerPlayer = function (args, context) {
+handlers.Register = function (args, context) {
 
     var playerStructure = {
         data: {
