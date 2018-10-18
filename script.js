@@ -63,8 +63,6 @@ handlers.MatchCanFind = function (args, context) {
 
     log.debug("arg:", args);
 
-    log.debug("type:", typeof(args));
-
     var betId = args.betId;
     if (!args || (args && typeof betId == "undefined")) {
         return {code: 400, text: "Not valid params"};
@@ -114,8 +112,6 @@ handlers.MatchCreated = function (args, context) {
 
     log.debug("arg:", args);
 
-    log.debug("type:", typeof(args));
-
     var betId = args.betId;
     var matchId = args.matchId;
     if (!args || (args && (typeof betId == "undefined" || typeof matchId == "undefined"))) {
@@ -152,8 +148,6 @@ handlers.MatchCreated = function (args, context) {
 handlers.MatchStart = function (args) {
 
     log.debug("arg:", args);
-
-    log.debug("type:", typeof(args));
 
     var matchId = args.matchId;
     var p1 = args.p1;
@@ -259,8 +253,6 @@ handlers.MatchEnd = function (args, context) {
 
     log.debug("arg:", args);
 
-    log.debug("type:", typeof(args));
-
     var status = args.status;
     var matchId = args.matchId;
 
@@ -346,8 +338,6 @@ handlers.Payment = function (args, context) {
 
     log.debug("arg:", args);
 
-    log.debug("type:", typeof(args));
-
     var id = args.id;
     var sn = args.sn;
     var amount = args.amount;
@@ -380,14 +370,11 @@ handlers.Payment = function (args, context) {
                 Amount: tariff[i].coins
             });
 
-            log.debug("res:", res);
-
-
-            // return {code: 200, text: "Ok", data: {
-            //     amount: amount,
-            //     coins: res.data.Balance,
-            //     change: res.data.BalanceChange
-            // }};
+            return {code: 200, text: "Ok", data: {
+                amount: amount,
+                coins: res.Balance,
+                change: res.BalanceChange
+            }};
         }
     }
 
@@ -404,8 +391,6 @@ handlers.Payment = function (args, context) {
 handlers.sendCode = function (args, context) {
 
     log.debug("arg:", args);
-
-    log.debug("type:", typeof(args));
 
     var phone = args.phone;
 
@@ -472,8 +457,6 @@ handlers.sendCode = function (args, context) {
 handlers.checkCode = function (args, context) {
 
     log.debug("arg:", args);
-
-    log.debug("type:", typeof(args));
 
     var code = args.code;
 
