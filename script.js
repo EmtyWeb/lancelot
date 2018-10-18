@@ -342,6 +342,58 @@ handlers.MatchEnd = function (args, context) {
  * @param context
  * @returns {*}
  */
+handlers.Payment = function (args, context) {
+
+    log.debug("arg:", args);
+
+    log.debug("type:", typeof(args));
+
+    var id = args.id;
+    var sn = args.sn;
+    var amount = args.amount;
+
+    if (!args || (args && (
+
+        typeof id == "undefined"
+        || typeof sn == "undefined"
+        || typeof amount == "undefined"
+
+        ))) {
+        return {code: 400, text: "Not valid params"};
+    }
+
+    var titleData = server.GetTitleData({
+        "Keys": [
+            "tariff"
+        ]
+    });
+
+    var tariff = JSON.parse(titleData.Data.tariff);
+
+    for (var i = 0; i < tariff.length; i++) {
+
+        if (tariff[i].amount == amount) {
+
+            server.AddUserVirtualCurrency({
+                PlayFabId: currentPlayerId,
+                VirtualCurrency: "CO",
+                Amount: tariff[i].coins
+            });
+
+            return {code: 200, text: "Ok"};
+        }
+    }
+
+
+    return {code: 400, text: "Not find tariff"};
+};
+
+/**
+ * Send code to player
+ * @param args
+ * @param context
+ * @returns {*}
+ */
 handlers.sendCode = function (args, context) {
 
     log.debug("arg:", args);
