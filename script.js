@@ -380,11 +380,14 @@ handlers.Payment = function (args, context) {
                 Amount: tariff[i].coins
             });
 
-            return {code: 200, text: "Ok", data: {
-                amount: amount,
-                coins: res.data.Balance,
-                change: res.data.BalanceChange
-            }};
+            log.debug("res:", res);
+
+
+            // return {code: 200, text: "Ok", data: {
+            //     amount: amount,
+            //     coins: res.data.Balance,
+            //     change: res.data.BalanceChange
+            // }};
         }
     }
 
