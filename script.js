@@ -374,13 +374,17 @@ handlers.Payment = function (args, context) {
 
         if (tariff[i].amount == amount) {
 
-            server.AddUserVirtualCurrency({
+            var res = server.AddUserVirtualCurrency({
                 PlayFabId: currentPlayerId,
                 VirtualCurrency: "CO",
                 Amount: tariff[i].coins
             });
 
-            return {code: 200, text: "Ok"};
+            return {code: 200, text: "Ok", data: {
+                amount: amount,
+                coins: res.data.Balance,
+                change: res.data.BalanceChange
+            }};
         }
     }
 
